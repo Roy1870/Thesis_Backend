@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kind_of_animals', function (Blueprint $table) {
-            $table->id('Kind_ID');
-            $table->string('Name');
-            $table->foreignId('animal_id')->constrained('animals', 'Animal_ID')->onDelete('cascade');
-            $table->timestamps();
-        });
+        Schema::dropIfExists('kinds_of_animals');
+
     }
 
     /**
@@ -24,6 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kind_of_animals');
+        //
     }
 };
