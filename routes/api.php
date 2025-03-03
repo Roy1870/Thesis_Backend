@@ -15,6 +15,8 @@ use App\Http\Controllers\BarangayAnimalController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\UserProfileController;
 
+use App\Http\Controllers\FarmerDataController;
+
 /*
 |-------------------------------------------------------------------------- 
 | API Routes
@@ -55,6 +57,15 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/farmers/data', [FarmerController::class, 'getFarmerData']);
     Route::get('/farmers/details', [FarmerController::class, 'getFarmerDetails']);
+
+    // FARMERS
+    Route::post('/farmers/data', [FarmerDataController::class, 'store']);
+    Route::get('/farmers/data', [FarmerDataController::class, 'index']);
+    Route::get('/farmers/data/{id}', [FarmerDataController::class, 'show']);
+    Route::put('/farmers/data/{id}', [FarmerDataController::class, 'edit'])->name('farmer.edit');
+
+    // GROWERS
+    
     // Add more protected routes here if needed
 
     Route::post('/user/profile', [UserProfileController::class, 'storeOrUpdate']);

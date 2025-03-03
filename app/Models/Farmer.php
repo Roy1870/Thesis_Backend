@@ -13,15 +13,7 @@ class Farmer extends Model
 
     protected $primaryKey = 'farmer_id';
 
-    protected $fillable = ['first_name','last_name', 'contact', 'barangay_id'];
+    protected $fillable = ['fname','lname', 'email', 'home_address','farm_address'];
 
-    public function farmerData()
-    {
-        return $this->hasMany(FarmerData::class, 'farmer_id', 'farmer_id');
-    }
-    public function barangay()
-    {
-        return $this->belongsTo(Barangay::class, 'barangay_id', 'barangay_id');
-    }
 }
 
