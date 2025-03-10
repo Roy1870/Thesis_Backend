@@ -41,16 +41,37 @@ Route::get('/animaldata', [AnimalDataController::class, 'getAnimalData']);
 Route::get('/barangay/data', [BarangayAnimalController::class, 'getBarangayData']);
 // Protected routes (authentication required)
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/animal', [AnimalController::class, 'store']);
+    Route::get('/animal/count', [AnimalController::class, 'getAnimalCount']);
+    Route::get('/getanimal', [AnimalController::class, 'index']);
+    
+    Route::post('/kfanimal', [KindOfAnimalController::class, 'store']);
+    Route::get('/getkfanimal', [KindOfAnimalController::class, 'index']);
+    Route::get('/profile', [UserAuthController::class, 'getUserInfo']);
+    
+    Route::get('/livestock/total', [GetYearlyDataController::class, 'getTotalLivestockData']);
+    Route::get('/livestock/currentyeartotal', [GetYearlyDataController::class, 'getTotalLivestockDataForCurrentYear']);
+    Route::get('/livestock/YearsData', [GetYearlyDataController::class, 'getTotalLivestockDataByYear']);
+    Route::get('/livestock/TopBarangay', [GetYearlyDataController::class, 'getTopBarangaysWithMostLivestock']);
+    Route::get('/livestock/LiveStockInsights', [GetYearlyDataController::class, 'generateInsights']);
+    
+    Route::get('/farmers/data', [FarmerController::class, 'getFarmerData']);
+    Route::get('/farmers/details', [FarmerController::class, 'getFarmerDetails']);
 
     // FARMERS
-    Route::post('/farmers/data', [FarmerDataController::class, 'store']);
-    Route::get('/farmers/data', [FarmerDataController::class, 'index']);
-    Route::get('/farmers/data/{id}', [FarmerDataController::class, 'show']);
-    Route::put('/farmers/data/{id}', [FarmerDataController::class, 'edit'])->name('farmer.edit');
-    Route::delete('/farmers/data/{id}', [FarmerDataController::class, 'destroy']);
+    Route::post('/farmers/data', [FarmerDataController::class, 'farmerstore']);
+    Route::get('/farmers/data', [FarmerDataController::class, 'indexFarmer']);
+    Route::get('/farmers/data/{id}', [FarmerDataController::class, 'showFarmer']);
+    Route::put('/farmers/data/{id}', [FarmerDataController::class, 'updateFarmer'])->name('farmer.update');
+    Route::delete('/farmers/data/{id}', [FarmerDataController::class, 'destroyFarmer']);
 
-    // GROWERS
-    
+    // Growers Routes
+    Route::post('/growers/data', [FarmerDataController::class, 'growerstore']);
+    Route::get('/growers/data', [FarmerDataController::class, 'indexGrower']);
+    Route::get('/growers/data/{id}', [FarmerDataController::class, 'showGrower']);
+    Route::put('/growers/data/{id}', [FarmerDataController::class, 'updateGrower'])->name('grower.update');
+    Route::delete('/growers/data/{id}', [FarmerDataController::class, 'destroyGrower']);
+        
     // Add more protected routes here if needed
 
     Route::post('/user/profile', [UserProfileController::class, 'storeOrUpdate']);
