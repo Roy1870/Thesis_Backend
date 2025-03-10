@@ -70,15 +70,7 @@ class FarmerDataController extends Controller
      */
     public function update(FarmerDataRequest $request ,string $id)
     {
-        $Farmer = Farmer::findOrFail($id);
-
-        $validated = $request->validated();
-
-        $Farmer->name = $validated['name'];
-
-        $Farmer->save();
-
-        return $Farmer;
+     
     }
 
     /**
@@ -86,6 +78,10 @@ class FarmerDataController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $Farmer = Farmer::findOrFail($id);
+
+        $Farmer->delete();
+
+        return $Farmer;
     }
 }
