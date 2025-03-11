@@ -62,15 +62,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/farmers/data', [FarmerDataController::class, 'farmerstore']);
     Route::get('/farmers/data', [FarmerDataController::class, 'indexFarmer']);
     Route::get('/farmers/data/{id}', [FarmerDataController::class, 'showFarmer']);
-    Route::put('/farmers/data/{id}', [FarmerDataController::class, 'updateFarmer'])->name('farmer.update');
+    Route::put('/farmers/data/{id}', [FarmerDataController::class, 'updateFarmer']);
     Route::delete('/farmers/data/{id}', [FarmerDataController::class, 'destroyFarmer']);
 
     // Growers Routes
     Route::post('/growers/data', [FarmerDataController::class, 'growerstore']);
     Route::get('/growers/data', [FarmerDataController::class, 'indexGrower']);
     Route::get('/growers/data/{id}', [FarmerDataController::class, 'showGrower']);
-    Route::put('/growers/data/{id}', [FarmerDataController::class, 'updateGrower'])->name('grower.update');
+    Route::put('/growers/data/{id}', [FarmerDataController::class, 'updateGrower']); 
     Route::delete('/growers/data/{id}', [FarmerDataController::class, 'destroyGrower']);
+
+    // Operator Routes
+    Route::post('/operator/data', [FarmerDataController::class, 'operatorstore']);
+    Route::get('/operator/data', [FarmerDataController::class, 'indexOperator']);
+    Route::get('/operator/data/{id}', [FarmerDataController::class, 'showOperator']);
+    Route::put('/operator/data/{id}', [FarmerDataController::class, 'updateOperator']);
+    Route::delete('/operator/data/{id}', [FarmerDataController::class, 'destroyOperator']);
         
     // Add more protected routes here if needed
 

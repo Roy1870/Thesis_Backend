@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Farmer;
 use App\Models\Grower;
+use App\Models\Operator;
 use App\Http\Requests\FarmerDataRequest;
 use App\Http\Requests\GrowersDataRequest;
+use App\Http\Requests\OperatorDataRequest;
 use Illuminate\Http\Request;
 
 class FarmerDataController extends Controller
@@ -23,11 +25,9 @@ class FarmerDataController extends Controller
         return Grower::all();
     }
 
-    /**
-     * Show the form for creating a new Farmer.
-     */
-    public function createFarmer()
+    public function indexOperator()
     {
+        return Operator::all();
     }
 
     /**
@@ -44,13 +44,6 @@ class FarmerDataController extends Controller
     }
 
     /**
-     * Show the form for creating a new Grower.
-     */
-    public function createGrower()
-    {
-    }
-
-    /**
      * Store a newly created Grower in storage.
      */
     public function growerstore(GrowersDataRequest $request)
@@ -61,6 +54,19 @@ class FarmerDataController extends Controller
         $grower = Grower::create($validated);
 
         return response()->json($grower, 201);
+    }
+
+     /**
+     * Store a newly created Operator in storage.
+     */
+    public function operatorstore(OperatorDataRequest $request)
+    {
+        // Retrieve the validated input data
+        $validated = $request->validated();
+
+        $operator = Operator::create($validated);
+
+        return response()->json($operator, 201);
     }
 
     /**
@@ -77,6 +83,14 @@ class FarmerDataController extends Controller
     public function showGrower(string $id)
     {
         return Grower::findOrFail($id);
+    }
+    
+     /**
+     * Display the specified Grower.
+     */
+    public function showOperator(string $id)
+    {
+        return Operator::findOrFail($id);
     }
 
     /**
@@ -144,6 +158,33 @@ class FarmerDataController extends Controller
         return response()->json($grower, 200);
     }
 
+
+    /**
+     * Update the specified Operator in storage.
+     */
+    public function updateOperator(string $id, OperatorDataRequest $request)
+    {
+        $operator = Operator::findOrFail($id);
+
+        // Retrieve validated input data
+        $validated = $request->validated();
+
+        $operator->fishpond_location = $validated['fishpond_location'] ?? $operator->fishpond_location;
+        $operator->cultured_species = $validated['cultured_species'] ?? $operator->cultured_species;
+        $operator->productive_area = $validated['productive_area'] ?? $operator->productive_area;
+        $operator->stocking_density = $validated['stocking_density'] ?? $operator->stocking_density;
+        $operator->production = $validated['production'] ?? $operator->production;
+        $operator->harvest_date = $validated['harvest_date'] ?? $operator->harvest_date;
+        $operator->month = $validated['month'] ?? $operator->month;
+        $operator->year = $validated['year'] ?? $operator->year;
+
+        // Add other fields if necessary
+
+        $operator->save();
+
+        return response()->json($operator, 200);
+    }
+
     /**
      * Remove the specified Farmer from storage.
      */
@@ -164,6 +205,18 @@ class FarmerDataController extends Controller
         $grower = Grower::findOrFail($id);
 
         $grower->delete();
+
+        return response()->json(null, 204);
+    }
+
+    /**
+     * Remove the specified Operator from storage.
+     */
+    public function destroyOperator(string $id)
+    {
+        $operator = Operator::findOrFail($id);
+
+        $operator->delete();
 
         return response()->json(null, 204);
     }
