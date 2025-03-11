@@ -25,13 +25,13 @@ class OperatorDataRequest extends FormRequest
             return [
                 'farmer_id'         => 'required|integer',
                 'fishpond_location' => 'required|string|max:255',
-                'cultured_species' => 'required|string|min:1',
+                'cultured_species' => 'required|string|max:255',
                 'productive_area' => 'required|integer|min:1',
-                'stocking_density' => 'required|integer|max:255',
-                'production' => 'required|integer|max:255',
+                'stocking_density' => 'required|integer|min:1',
+                'production' => 'required|integer|min:1',
                 'harvest_date' => 'required|string|max:255',
                 'month' => 'required|string|max:255',
-                'year' => 'required|integer|max:255',
+                'year' => 'required|integer|min:1',
             ];
         } elseif (request()->routeIs('operator.edit')) {
             return [
@@ -52,11 +52,11 @@ class OperatorDataRequest extends FormRequest
             'fishpond_location' => 'nullable|string|max:255',
             'cultured_species' => 'nullable|string|min:1',
             'productive_area' => 'nullable|integer|min:1',
-            'stocking_density' => 'nullable|integer|max:255',
-            'production' => 'nullable|integer|max:255',
+            'stocking_density' => 'nullable|integer|min:1',
+            'production' => 'nullable|integer|min:1',
             'harvest_date' => 'nullable|string|max:255',
             'month' => 'nullable|string|max:255',
-            'year' => 'nullable|integer|max:255',
+            'year' => 'nullable|integer|min:1',
         ];
     }
 }
