@@ -11,7 +11,7 @@ class Operator extends Model
 
     protected $primaryKey = 'o_id';
 
-    protected $fillable = ['fishpond_location','cultured_species', 'productive_area', 'stocking_density','production','harvest_date','month','year','farmer_id'];
+    protected $fillable = ['fishpond_location','cultured_species', 'productive_area', 'stocking_density','production','harvest_date','month','year','remarks','farmer_id'];
 
     public function farmer()
     {

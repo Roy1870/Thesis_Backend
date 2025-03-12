@@ -32,6 +32,7 @@ class OperatorDataRequest extends FormRequest
                 'harvest_date' => 'required|string|max:255',
                 'month' => 'required|string|max:255',
                 'year' => 'required|integer|min:1',
+                'remarks' => 'required|string|max:255',
             ];
         } elseif (request()->routeIs('operator.edit')) {
             return [
@@ -44,6 +45,7 @@ class OperatorDataRequest extends FormRequest
                 'harvest_date' => 'required|string|max:255',
                 'month' => 'required|string|max:255',
                 'year' => 'required|integer|max:255',
+                'remarks' => 'required|string|max:255',
             ];
         }
     
@@ -57,6 +59,7 @@ class OperatorDataRequest extends FormRequest
             'harvest_date' => 'nullable|string|max:255',
             'month' => 'nullable|string|max:255',
             'year' => 'nullable|integer|min:1',
+            'remarks' => 'nullable|string|max:255',
         ];
     }
 }

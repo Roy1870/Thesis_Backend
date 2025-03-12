@@ -23,20 +23,20 @@ class RaiserDataRequest extends FormRequest
     {
         if (request()->routeIs('raiser.store')) {
             return [
-                'farmer_id'         => 'required|integer',
+                'farmer_id'=> 'required|integer',
                 'species' => 'required|string|max:255',
                 'remarks' => 'required|string|max:255',
             ];
         } elseif (request()->routeIs('raiser.edit')) {
             return [
-                'farmer_id'         => 'required|integer',
+                'farmer_id'=>'required|integer',
                 'species' => 'required|string|max:255',
                 'remarks' => 'required|string|max:255',
             ];
         }
     
         return [
-            'farmer_id'         => 'nullable|integer',
+            'farmer_id'=> 'nullable|integer',
             'species' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:255',
         ];
