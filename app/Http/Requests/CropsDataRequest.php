@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AnimalRequest extends FormRequest
+class CropsDataRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,12 @@ class AnimalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Name'         => 'required|string|max:255',
-            'Category'         => 'required|string|max:255',
+            'grower_id'        => 'required|exists:growers,grower_id', // Ensures grower_id exists
+            'crop_type'        => 'required|string|max:255',
+            'variety_clone'    => 'nullable|string|max:255',
+            'area_hectare'     => 'required|numeric|min:0', // Ensures valid numeric input
+            'production_type'  => 'required|string|max:255',
+            'production_data'  => 'required|json', // Ensures JSON format
         ];
     }
 }

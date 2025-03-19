@@ -21,32 +21,24 @@ class FarmerDataRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (request()->routeIs('farmer.store')) {
-            return [
-                'fname'         => 'required|string|max:255',
-                'lname'         => 'required|string|max:255',
-                'email'         => 'required|string|max:255',
-                'home_address'  => 'required|string|max:255',
-                'farm_address'  => 'required|string|max:255',
-            ];
-        } elseif (request()->routeIs('farmer.edit')) {
-            return [
-                'fname'         => 'nullable|string|max:255',
-                'lname'         => 'nullable|string|max:255',
-                'email'         => 'nullable|string|max:255',
-                'home_address'  => 'nullable|string|max:255',
-                'farm_address'  => 'nullable|string|max:255',
-            ];
-        }
-    
-        return [
-            'fname'         => 'nullable|string|max:255',
-            'lname'         => 'nullable|string|max:255',
-            'email'         => 'nullable|string|max:255',
-            'home_address'  => 'nullable|string|max:255',
-            'farm_address'  => 'nullable|string|max:255',
+        $rules = [
+            'name'                      => 'nullable|string|max:255',
+            'contact_number'            => 'nullable|string|max:20',
+            'facebook_email'            => 'nullable|email|max:255',
+            'home_address'              => 'nullable|string|max:255',
+            'farm_address'              => 'nullable|string|max:255',
+            'farm_location_longitude'   => 'nullable|numeric|between:-180,180',
+            'farm_location_latitude'    => 'nullable|numeric|between:-90,90',
+            'market_outlet_location'    => 'nullable|string|max:255',
+            'buyer_name'                => 'nullable|string|max:255',
+            'association_organization'  => 'nullable|string|max:255',
         ];
-    }
-    
-}
 
+        if ($this->isMethod('post')) { // For storing a new farmer
+            $rules['name']           = 'required|string|max:255';
+            $rules['contact_number'] = 'required|string|max:20';
+        }
+
+        return $rules;
+    }
+}

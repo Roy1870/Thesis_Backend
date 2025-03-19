@@ -21,33 +21,10 @@ class GrowersDataRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (request()->routeIs('grower.store')) {
-            return [
-                'farmer_id'         => 'required|integer',
-                'crop_name' => 'required|string|max:255',
-                'area_hectares' => 'required|integer|min:1',
-                'yield' => 'required|integer|min:1',
-                'season' => 'required|string|max:255',
-                'market_outlet' => 'required|string|max:255',
-            ];
-        } elseif (request()->routeIs('grower.edit')) {
-            return [
-                'farmer_id'         => 'nullable|integer',
-                'crop_name' => 'required|string|max:255',
-                'area_hectares' => 'required|integer|min:1',
-                'yield' => 'required|integer|min:1',
-                'season' => 'required|string|max:255',
-                'market_outlet' => 'required|string|max:255',
-            ];
-        }
-    
         return [
-            'farmer_id'         => 'nullable|integer',
-            'crop_name' => 'nullable|string|max:255',
-            'area_hectares' => 'nullable|integer|min:1',
-            'yield' => 'nullable|integer|min:1',
-            'season' => 'nullable|string|max:255',
-            'market_outlet' => 'nullable|string|max:255',
+            'farmer_id'    => 'required|exists:farmers,farmer_id', // Ensures farmer_id exists
+            'created_at'   => 'nullable|date',
+            'updated_at'   => 'nullable|date',
         ];
     }
 }

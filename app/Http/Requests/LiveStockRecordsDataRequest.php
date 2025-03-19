@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class KindOfAnimalRequest extends FormRequest
+class LivestockRecordsDataRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,10 @@ class KindOfAnimalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Name'         => 'required|string|max:255',
-            'animal_id'         => 'required|integer',
+            'raiser_id'    => 'required|exists:raisers,raiser_id', // Ensures raiser_id exists
+            'animal_type'  => 'required|string|max:255',
+            'subcategory'  => 'required|string|max:255',
+            'quantity'     => 'required|integer|min:1', // Ensures quantity is a positive integer
         ];
     }
 }

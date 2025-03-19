@@ -21,45 +21,18 @@ class OperatorDataRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (request()->routeIs('operator.store')) {
-            return [
-                'farmer_id'         => 'required|integer',
-                'fishpond_location' => 'required|string|max:255',
-                'cultured_species' => 'required|string|max:255',
-                'productive_area' => 'required|integer|min:1',
-                'stocking_density' => 'required|integer|min:1',
-                'production' => 'required|integer|min:1',
-                'harvest_date' => 'required|string|max:255',
-                'month' => 'required|string|max:255',
-                'year' => 'required|integer|min:1',
-                'remarks' => 'required|string|max:255',
-            ];
-        } elseif (request()->routeIs('operator.edit')) {
-            return [
-                'farmer_id'         => 'nullable|integer',
-                'fishpond_location' => 'required|string|max:255',
-                'cultured_species' => 'required|string|min:1',
-                'productive_area' => 'required|integer|min:1',
-                'stocking_density' => 'required|integer|max:255',
-                'production' => 'required|integer|max:255',
-                'harvest_date' => 'required|string|max:255',
-                'month' => 'required|string|max:255',
-                'year' => 'required|integer|max:255',
-                'remarks' => 'required|string|max:255',
-            ];
-        }
-    
         return [
-            'farmer_id'         => 'nullable|integer',
-            'fishpond_location' => 'nullable|string|max:255',
-            'cultured_species' => 'nullable|string|min:1',
-            'productive_area' => 'nullable|integer|min:1',
-            'stocking_density' => 'nullable|integer|min:1',
-            'production' => 'nullable|integer|min:1',
-            'harvest_date' => 'nullable|string|max:255',
-            'month' => 'nullable|string|max:255',
-            'year' => 'nullable|integer|min:1',
-            'remarks' => 'nullable|string|max:255',
+            'farmer_id'            => 'required|exists:farmers,farmer_id',
+            'fishpond_location'    => 'required|string|max:255',
+            'geotagged_photo_url'  => 'nullable|string|max:255',
+            'cultured_species'     => 'required|string|max:255',
+            'productive_area_sqm'  => 'nullable|numeric|min:0',
+            'stocking_density'     => 'nullable|numeric|min:0',
+            'date_of_stocking'     => 'nullable|date',
+            'production_kg'        => 'nullable|numeric|min:0',
+            'date_of_harvest'      => 'nullable|date',
+            'operational_status'   => 'required|string|max:255',
+            'remarks'              => 'nullable|string|max:500',
         ];
     }
 }
