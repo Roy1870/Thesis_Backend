@@ -16,7 +16,6 @@ class LivestockRecord extends Model
     // Relationship with Livestock
     public function livestock()
     {
-        return $this->belongsTo(Livestock::class, 'liv_id');
     }
 
 }
