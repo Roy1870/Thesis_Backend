@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\FarmerDataController;
-use App\Http\Controllers\LivestockRecordController; // ✅ Import the controller
+use App\Http\Controllers\LivestockRecordsController;
+use App\Http\Controllers\CropsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,13 +36,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [FarmerDataController::class, 'destroy']);
     });
 
-    // ✅ Livestock Records CRUD Routes
+    // Livestock Records Routes
     Route::prefix('livestock-records')->group(function () {
-        Route::get('/', [LivestockRecordController::class, 'index']);      // Get all records
-        Route::post('/', [LivestockRecordController::class, 'store']);     // Create a record
-        Route::get('/{id}', [LivestockRecordController::class, 'show']);   // Get a single record
-        Route::put('/{id}', [LivestockRecordController::class, 'update']); // Update a record
-        Route::delete('/{id}', [LivestockRecordController::class, 'destroy']); // Delete a record
+        Route::get('/', [LivestockRecordsController::class, 'index']);
+        Route::post('/', [LivestockRecordsController::class, 'store']);
+        Route::get('/{id}', [LivestockRecordsController::class, 'show']);
+        Route::put('/{id}', [LivestockRecordsController::class, 'update']);
+        Route::delete('/{id}', [LivestockRecordsController::class, 'destroy']);
+    });
+
+    // Crop Routes
+    Route::prefix('crops')->group(function () {
+        Route::get('/', [CropsController::class, 'index']);     
+        Route::post('/', [CropsController::class, 'store']);    
+        Route::get('/{id}', [CropsController::class, 'show']);  
+        Route::put('/{id}', [CropsController::class, 'update']); 
+        Route::delete('/{id}', [CropsController::class, 'destroy']); 
     });
 
     // User Profile & Management Routes
