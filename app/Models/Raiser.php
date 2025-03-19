@@ -9,13 +9,17 @@ class Raiser extends Model
 {
     use HasFactory;
 
+    protected $table = 'raisers'; // Explicitly define table name (optional)
     protected $primaryKey = 'r_id';
+    public $timestamps = true; // Ensure timestamps are managed
 
-    protected $fillable = ['species','remarks','farmer_id'];
+    protected $fillable = ['species', 'remarks', 'farmer_id'];
 
+    /**
+     * Define relationship: Raiser belongs to a Farmer.
+     */
     public function farmer()
     {
-        return $this->hasMany(Farmer::class, 'farmer_id', 'farmer_id');
+        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id');
     }
-
 }

@@ -13,7 +13,7 @@ class Farmer extends Model
 
     protected $primaryKey = 'farmer_id';
 
-    protected $fillable = ['name', 'contact_number','facebook_email', 'home_address','farm_address'];
+    protected $fillable = ['name', 'contact_number','facebook_email', 'home_address','farm_address','farm_location_longitude','farm_location_latitude','market_outlet_location','buyer_name','association_organization'];
 
 }
 

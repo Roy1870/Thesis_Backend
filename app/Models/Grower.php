@@ -9,12 +9,12 @@ class Grower extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'g_id';
+    protected $primaryKey = 'grower_id'; // Updated to match your schema
 
-    protected $fillable = ['crop_name','area_hectares', 'yield', 'season','market_outlet','farmer_id'];
+    protected $fillable = ['farmer_id', 'created_at', 'updated_at']; // Adjust based on actual table
 
     public function farmer()
     {
-        return $this->hasMany(Farmer::class, 'farmer_id', 'farmer_id');
+        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id'); // A grower belongs to a farmer
     }
 }

@@ -9,12 +9,26 @@ class Operator extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'o_id';
+    protected $primaryKey = 'operator_id'; // Updated to match schema
 
-    protected $fillable = ['fishpond_location','cultured_species', 'productive_area', 'stocking_density','production','harvest_date','month','year','remarks','farmer_id'];
+    protected $fillable = [
+        'farmer_id',
+        'fishpond_location',
+        'geotagged_photo_url',
+        'cultured_species',
+        'productive_area_sqm',
+        'stocking_density',
+        'date_of_stocking',
+        'production_kg',
+        'date_of_harvest',
+        'operational_status',
+        'remarks',
+        'created_at',
+        'updated_at'
+    ];
 
     public function farmer()
     {
-        return $this->hasMany(Farmer::class, 'farmer_id', 'farmer_id');
+        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id'); // A grower belongs to a farmer
     }
 }

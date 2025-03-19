@@ -10,12 +10,17 @@ class LivestockRecord extends Model
     use HasFactory;
 
     protected $table = 'livestock_records'; // Explicit table name
-    protected $primaryKey = 'rec_id';
-    protected $fillable = ['liv_id', 'sub_id', 'quantity', 'year', 'month', 'remarks']; // Allow mass assignment
+    protected $primaryKey = 'record_id'; // Matches migration
 
-    // Relationship with Livestock
-    public function livestock()
+    public $timestamps = true; // Ensure timestamps are enabled
+
+    protected $fillable = ['raiser_id', 'animal_type', 'subcategory', 'quantity'];
+
+    /**
+     * Relationship: LivestockRecord belongs to a Raiser.
+     */
+    public function raiser()
     {
+        return $this->belongsTo(Raiser::class, 'raiser_id', 'raiser_id');
     }
-
 }
