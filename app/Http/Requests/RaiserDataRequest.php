@@ -20,12 +20,13 @@ class RaiserDataRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'farmer_id'  => 'required|exists:farmers,farmer_id', // Ensures farmer_id exists
-            'location'   => 'required|string|max:255',
-            'updated_by' => 'required|string|max:255',
-            'remarks'    => 'nullable|string|max:255',
-        ];
-    }
+{
+    return [
+        'farmer_id'  => 'required|integer|exists:farmers,farmer_id', // Ensures it's an integer
+        'location'   => 'required|string|max:255',
+        'updated_by' => 'required|string|max:255',
+        'remarks'    => 'nullable|string|max:255',
+    ];
+}
+
 }

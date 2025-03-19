@@ -13,7 +13,24 @@ class Farmer extends Model
 
     protected $primaryKey = 'farmer_id';
 
-    protected $fillable = ['name', 'contact_number','facebook_email', 'home_address','farm_address','farm_location_longitude','farm_location_latitude','market_outlet_location','buyer_name','association_organization'];
+    protected $fillable = [
+        'name',
+        'contact_number',
+        'facebook_email',
+        'home_address',
+        'farm_address',
+        'farm_location_longitude',
+        'farm_location_latitude',
+        'market_outlet_location',
+        'buyer_name',
+        'association_organization',
+    ];
 
+    protected $casts = [
+        'farmer_id'               => 'integer',
+        'farm_location_longitude' => 'float',
+        'farm_location_latitude'  => 'float',
+        'created_at'              => 'datetime',
+        'updated_at'              => 'datetime',
+    ];
 }
-

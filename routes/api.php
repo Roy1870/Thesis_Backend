@@ -32,29 +32,8 @@ use App\Http\Controllers\FarmerDataController;
 Route::post('/register', [UserController::class, 'store']);
 Route::post('/login', [UserAuthController::class, 'login']);
 
-Route::post('/dataEntry', [DataEntryController::class, 'store']);
-
-Route::get('/Barangay/Data', [BarangayCountController::class, 'getBarangayCounts']);
-
-Route::get('/animaldata', [AnimalDataController::class, 'getAnimalData']);
-
-Route::get('/barangay/data', [BarangayAnimalController::class, 'getBarangayData']);
 // Protected routes (authentication required)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/animal', [AnimalController::class, 'store']);
-    Route::get('/animal/count', [AnimalController::class, 'getAnimalCount']);
-    Route::get('/getanimal', [AnimalController::class, 'index']);
-    
-    Route::post('/kfanimal', [KindOfAnimalController::class, 'store']);
-    Route::get('/getkfanimal', [KindOfAnimalController::class, 'index']);
-    Route::get('/profile', [UserAuthController::class, 'getUserInfo']);
-    
-    Route::get('/livestock/total', [GetYearlyDataController::class, 'getTotalLivestockData']);
-    Route::get('/livestock/currentyeartotal', [GetYearlyDataController::class, 'getTotalLivestockDataForCurrentYear']);
-    Route::get('/livestock/YearsData', [GetYearlyDataController::class, 'getTotalLivestockDataByYear']);
-    Route::get('/livestock/TopBarangay', [GetYearlyDataController::class, 'getTopBarangaysWithMostLivestock']);
-    Route::get('/livestock/LiveStockInsights', [GetYearlyDataController::class, 'generateInsights']);
-
     // All Farmer Routes
     
 Route::prefix('{type}/data')->group(function () {

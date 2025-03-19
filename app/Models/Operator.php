@@ -9,7 +9,7 @@ class Operator extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'operator_id'; // Updated to match schema
+    protected $primaryKey = 'operator_id'; 
 
     protected $fillable = [
         'farmer_id',
@@ -27,8 +27,19 @@ class Operator extends Model
         'updated_at'
     ];
 
+    /**
+     * Ensure numeric fields are cast correctly
+     */
+    protected $casts = [
+        'farmer_id' => 'integer',
+        'operator_id' => 'integer',
+        'productive_area_sqm' => 'float',
+        'stocking_density' => 'float',
+        'production_kg' => 'float',
+    ];
+
     public function farmer()
     {
-        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id'); // A grower belongs to a farmer
+        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id');
     }
 }

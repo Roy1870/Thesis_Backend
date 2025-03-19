@@ -23,6 +23,15 @@ class Crop extends Model
         'production_data'
     ];
 
+    protected $casts = [
+        'crop_id'         => 'integer',
+        'grower_id'       => 'integer',
+        'area_hectare'    => 'float',
+        'production_data' => 'array', // Ensure production data is always cast as an array (JSON stored in DB)
+        'created_at'      => 'datetime',
+        'updated_at'      => 'datetime',
+    ];
+
     /**
      * Relationship: Crop belongs to a Grower.
      */

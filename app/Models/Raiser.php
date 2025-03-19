@@ -9,11 +9,19 @@ class Raiser extends Model
 {
     use HasFactory;
 
-    protected $table = 'raisers'; // Explicitly define table name (optional)
-    protected $primaryKey = 'r_id';
-    public $timestamps = true; // Ensure timestamps are managed
+    protected $table = 'raisers'; // Explicitly define table name
+    protected $primaryKey = 'raiser_id';
+    public $timestamps = true;
 
-    protected $fillable = ['species', 'remarks', 'farmer_id'];
+    protected $fillable = ['farmer_id', 'location', 'updated_by', 'remarks'];
+
+    /**
+     * Define attribute casting to ensure proper data types.
+     */
+    protected $casts = [
+        'farmer_id' => 'integer',
+        'raiser_id' => 'integer',
+    ];
 
     /**
      * Define relationship: Raiser belongs to a Farmer.

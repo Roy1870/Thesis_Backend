@@ -22,7 +22,7 @@ class GrowersDataRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'farmer_id'    => 'required|exists:farmers,farmer_id', // Ensures farmer_id exists
+            'farmer_id'  => 'required|integer|exists:farmers,farmer_id', 
             'created_at'   => 'nullable|date',
             'updated_at'   => 'nullable|date',
         ];

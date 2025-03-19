@@ -13,6 +13,13 @@ class Grower extends Model
 
     protected $fillable = ['farmer_id', 'created_at', 'updated_at']; // Adjust based on actual table
 
+    protected $casts = [
+        'grower_id'  => 'integer',
+        'farmer_id'  => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function farmer()
     {
         return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id'); // A grower belongs to a farmer
