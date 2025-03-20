@@ -5,21 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Crops extends Model
+class Rice extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'crop_id';
+    protected $primaryKey = 'rice_id';
 
     protected $fillable = [
-        'grower_id', 'crop_type', 'variety_clone', 'area_hectare',
-        'production_type', 'production_data'
+        'grower_id', 'area_type', 'seed_type',
+        'area_harvested', 'production', 'ave_yield'
     ];
 
     protected $casts = [
         'grower_id' => 'integer',
-        'area_hectare' => 'float',
-        'production_data' => 'array' // Ensures JSON field is automatically cast to an array
+        'area_harvested' => 'integer',
+        'production' => 'integer',
+        'ave_yield' => 'integer',
     ];
 
     public function grower()

@@ -9,6 +9,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\FarmerDataController;
 use App\Http\Controllers\LivestockRecordsController;
 use App\Http\Controllers\CropsController;
+use App\Http\Controllers\GrowerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [LivestockRecordsController::class, 'show']);
         Route::put('/{id}', [LivestockRecordsController::class, 'update']);
         Route::delete('/{id}', [LivestockRecordsController::class, 'destroy']);
+    });
+
+    Route::prefix('growers')->group(function () {
+        Route::get('/', [GrowerController::class, 'index']);       // List all growers with crops & rice
+        Route::post('/', [GrowerController::class, 'store']);      // Create a new grower with crops & rice
+        Route::get('/{id}', [GrowerController::class, 'show']);    // Get a specific grower with crops & rice
+        Route::put('/{id}', [GrowerController::class, 'update']);  // Update grower, crops, or rice
+        Route::delete('/{id}', [GrowerController::class, 'destroy']); // Delete grower and related records
     });
 
     // Crop Routes

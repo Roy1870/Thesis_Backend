@@ -9,19 +9,24 @@ class Grower extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'grower_id'; // Updated to match your schema
+    protected $primaryKey = 'grower_id'; // Custom primary key
 
-    protected $fillable = ['farmer_id', 'created_at', 'updated_at']; // Adjust based on actual table
+    protected $fillable = ['farmer_id'];
 
     protected $casts = [
-        'grower_id'  => 'integer',
-        'farmer_id'  => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'grower_id' => 'integer',
+        'farmer_id' => 'integer'
     ];
 
-    public function farmer()
+    public function crops()
     {
-        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id'); // A grower belongs to a farmer
+        return $this->hasMany(Crops::class, 'grower_id');
+    }
+
+    public function rice()
+    {
+        return $this->hasMany(Rice::class, 'grower_id');
     }
 }
+
+

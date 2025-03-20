@@ -3,90 +3,102 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Farmer;
-use App\Models\Grower;
-use App\Models\Operator;
-use App\Models\Raiser;
 use App\Http\Requests\FarmerDataRequest;
-use App\Http\Requests\GrowersDataRequest;
-use App\Http\Requests\RaiserDataRequest;
-use App\Http\Requests\OperatorDataRequest;
 
 class FarmerDataController extends Controller
 {
-    protected $models = [
-        'farmers' => [FarmerDataRequest::class, Farmer::class],
-        'growers' => [GrowersDataRequest::class, Grower::class],
-        'operators' => [OperatorDataRequest::class, Operator::class],
-        'raisers' => [RaiserDataRequest::class, Raiser::class],
-    ];
+    protected $model = [FarmerDataRequest::class, Farmer::class];
 
-    public function index($type)
+    public function index()
     {
-        if (!isset($this->models[$type])) {
-            return response()->json(['error' => 'Invalid type'], 400);
-        }
-        return response()->json($this->models[$type][1]::all(), 200);
+        return response()->json(Farmer::all(), 200);
     }
 
-    public function store(Request $request, $type)
+    public function store(Request $request)
     {
-        if (!isset($this->models[$type])) {
-            return response()->json(['error' => 'Invalid type'], 400);
+        try {
+            // Validate request dynamically
+            $validatedRequest = app(FarmerDataRequest::class);
+            $validated = $validatedRequest->validated();
+
+            // Create new Farmer record
+            $farmer = Farmer::create($validated);
+
+            return response()->json([
+                'message' => 'Farmer data saved successfully!',
+                'data' => $farmer
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation failed',
+                'messages' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Error storing farmer data: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Server error',
+                'message' => 'An unexpected error occurred. Please try again.'
+            ], 500);
         }
-        
-        [$requestClass, $modelClass] = $this->models[$type];
-        $validatedRequest = app($requestClass);
-        $validated = $validatedRequest->validated();
-
-        $record = $modelClass::create($validated);
-
-        return response()->json($record, 201);
     }
 
-    public function show($type, $id)
+    public function show($id)
     {
-        if (!isset($this->models[$type])) {
-            return response()->json(['error' => 'Invalid type'], 400);
-        }
-        
-        $record = $this->models[$type][1]::findOrFail($id);
-        return response()->json($record, 200);
+        $farmer = Farmer::findOrFail($id);
+        return response()->json($farmer, 200);
     }
 
-    public function update(Request $request, $type, $id)
-{
-    if (!isset($this->models[$type])) {
-        return response()->json(['error' => 'Invalid type'], 400);
-    }
-    
-    [$requestClass, $modelClass] = $this->models[$type];
-
-    // Validate input (ensure non-null values)
-    $validatedRequest = app($requestClass);
-    $validated = array_filter($validatedRequest->validated(), fn($value) => !is_null($value));
-
-    // Find record
-    $record = $modelClass::findOrFail($id);
-
-    // Only update fields present in request
-    if (!empty($validated)) {
-        $record->update($validated);
-    }
-
-    return response()->json($record, 200);
-}
-
-
-    public function destroy($type, $id)
+    public function update(Request $request, $id)
     {
-        if (!isset($this->models[$type])) {
-            return response()->json(['error' => 'Invalid type'], 400);
-        }
-        
-        $record = $this->models[$type][1]::findOrFail($id);
-        $record->delete();
+        try {
+            // Validate input
+            $validatedRequest = app(FarmerDataRequest::class);
+            $validated = array_filter($validatedRequest->validated(), fn($value) => !is_null($value));
 
-        return response()->json(['message' => 'Deleted successfully'], 200);
+            // Find and update record
+            $farmer = Farmer::findOrFail($id);
+            if (!empty($validated)) {
+                $farmer->update($validated);
+            }
+
+            return response()->json($farmer, 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation failed',
+                'messages' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating farmer data: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Server error',
+                'message' => 'An unexpected error occurred. Please try again.'
+            ], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $farmer = Farmer::findOrFail($id);
+            $farmer->delete();
+
+            return response()->json(['message' => 'Farmer deleted successfully'], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error deleting farmer: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Server error',
+                'message' => 'An unexpected error occurred. Please try again.'
+            ], 500);
+        }
     }
 }
