@@ -24,62 +24,62 @@ class GrowerController extends Controller
     /**
      * Store a newly created grower along with crops and rice.
      */
-    public function store(StoreGrowerRequest $request)
-    {
-        $validatedData = $request->validated();
-        DB::beginTransaction();
-    
-        try {
-            $farmer = null;
-    
-            // Create farmer only if provided
-            if (isset($validatedData['farmer'])) {
-                $farmer = Farmer::create($validatedData['farmer']);
-            }
-    
-            // Create grower (farmer_id is optional)
-            $grower = Grower::create([
-                'farmer_id' => $farmer ? $farmer->farmer_id : null
-            ]);
-    
-            $growerId = $grower->grower_id;
-            $createdCrops = [];
-            $createdRice = [];
-    
-            // Create crops if provided
-            if (!empty($validatedData['crops'])) {
-                foreach ($validatedData['crops'] as $cropData) {
-                    $cropData['grower_id'] = $growerId;
-                    $createdCrops[] = Crops::create($cropData);
-                }
-            }
-    
-            // Create rice records if provided
-            if (!empty($validatedData['rice'])) {
-                foreach ($validatedData['rice'] as $riceData) {
-                    $riceData['grower_id'] = $growerId;
-                    $createdRice[] = Rice::create($riceData);
-                }
-            }
-    
-            DB::commit();
-    
-            return response()->json([
-                'message' => 'Grower and related records created successfully!',
-                'grower' => $grower,
-                'crops' => $createdCrops,
-                'rice' => $createdRice
-            ], 201);
-    
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'error' => 'Something went wrong.',
-                'details' => $e->getMessage()
-            ], 500);
+   public function store(StoreGrowerRequest $request)
+{
+    $validatedData = $request->validated();
+    DB::beginTransaction();
+
+    try {
+        $farmer = null;
+
+        // Create farmer only if provided
+        if (isset($validatedData['farmer'])) {
+            $farmer = Farmer::create($validatedData['farmer']);
         }
+
+        // Create grower (farmer_id is optional)
+        $grower = Grower::create([
+            'farmer_id' => $farmer ? $farmer->farmer_id : null
+        ]);
+
+        $growerId = $grower->grower_id;
+        $createdCrops = [];
+        $createdRice = [];
+
+        // Create crops if provided
+        if (!empty($validatedData['crops'])) {
+            foreach ($validatedData['crops'] as $cropData) {
+                $cropData['grower_id'] = $growerId;
+                $createdCrops[] = Crops::create($cropData);
+            }
+        }
+
+        // Create rice records if provided
+        if (!empty($validatedData['rice'])) {
+            foreach ($validatedData['rice'] as $riceData) {
+                $riceData['grower_id'] = $growerId;
+                $createdRice[] = Rice::create($riceData);
+            }
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Grower and related records created successfully!',
+            'grower' => $grower,
+            'crops' => $createdCrops,
+            'rice' => $createdRice
+        ], 201);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'error' => 'Something went wrong.',
+            'details' => $e->getMessage()
+        ], 500);
     }
-    
+}
+
     /**
      * Display the specified grower along with crops and rice.
      */

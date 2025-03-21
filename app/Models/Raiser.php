@@ -9,25 +9,43 @@ class Raiser extends Model
 {
     use HasFactory;
 
-    protected $table = 'raisers'; // Explicitly define table name
     protected $primaryKey = 'raiser_id';
-    public $timestamps = true;
 
-    protected $fillable = ['farmer_id', 'location', 'updated_by', 'remarks'];
-
-    /**
-     * Define attribute casting to ensure proper data types.
-     */
-    protected $casts = [
-        'farmer_id' => 'integer',
-        'raiser_id' => 'integer',
+    protected $fillable = [
+        'farmer_id',
+        'location',
+        'updated_by',
+        'remarks'
     ];
 
     /**
-     * Define relationship: Raiser belongs to a Farmer.
+     * Automatically cast attributes to appropriate data types.
+     */
+    protected $casts = [
+        'raiser_id' => 'integer',
+        'farmer_id' => 'integer',
+        'location' => 'string',
+        'updated_by' => 'string',
+        'remarks' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
+    /**
+     * Relationship: A raiser belongs to a farmer.
      */
     public function farmer()
     {
         return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id');
     }
+
+    /**
+     * Relationship: A raiser has many livestock records.
+     */
+    public function livestockRecords()
+    {
+        return $this->hasMany(LivestockRecord::class, 'raiser_id', 'raiser_id');
+    }
 }
+
+

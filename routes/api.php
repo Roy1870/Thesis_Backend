@@ -8,7 +8,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\FarmerDataController;
 use App\Http\Controllers\LivestockRecordsController;
-use App\Http\Controllers\CropsController;
+use App\Http\Controllers\RaiserController;
 use App\Http\Controllers\GrowerController;
 
 /*
@@ -28,23 +28,6 @@ Route::post('/login', [UserAuthController::class, 'login']);
 
 // Protected routes (authentication required)
 Route::middleware('auth:sanctum')->group(function () {
-    // All Farmer Routes
-    Route::prefix('{type}/data')->group(function () {
-        Route::get('/', [FarmerDataController::class, 'index']);
-        Route::post('/', [FarmerDataController::class, 'store']);
-        Route::get('/{id}', [FarmerDataController::class, 'show']);
-        Route::put('/{id}', [FarmerDataController::class, 'update']);
-        Route::delete('/{id}', [FarmerDataController::class, 'destroy']);
-    });
-
-    // Livestock Records Routes
-    Route::prefix('livestock-records')->group(function () {
-        Route::get('/', [LivestockRecordsController::class, 'index']);
-        Route::post('/', [LivestockRecordsController::class, 'store']);
-        Route::get('/{id}', [LivestockRecordsController::class, 'show']);
-        Route::put('/{id}', [LivestockRecordsController::class, 'update']);
-        Route::delete('/{id}', [LivestockRecordsController::class, 'destroy']);
-    });
 
     Route::prefix('growers')->group(function () {
         Route::get('/', [GrowerController::class, 'index']);       // List all growers with crops & rice
@@ -54,13 +37,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [GrowerController::class, 'destroy']); // Delete grower and related records
     });
 
-    // Crop Routes
-    Route::prefix('crops')->group(function () {
-        Route::get('/', [CropsController::class, 'index']);     
-        Route::post('/', [CropsController::class, 'store']);    
-        Route::get('/{id}', [CropsController::class, 'show']);  
-        Route::put('/{id}', [CropsController::class, 'update']); 
-        Route::delete('/{id}', [CropsController::class, 'destroy']); 
+    Route::prefix('raisers')->group(function () {
+        Route::get('/', [RaiserController::class, 'index']);            // Get all raisers
+        Route::post('/', [RaiserController::class, 'store']);           // Create a new raiser
+        Route::get('/{id}', [RaiserController::class, 'show']);         // Get a specific raiser
+        Route::put('/{id}', [RaiserController::class, 'update']);       // Update a raiser
+        Route::delete('/{id}', [RaiserController::class, 'destroy']);   // Delete a raiser
     });
 
     // User Profile & Management Routes
