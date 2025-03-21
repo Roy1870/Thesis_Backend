@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Grower;
 use App\Models\Crops;
 use App\Models\Rice;
+use App\Models\Farmer;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreGrowerRequest;
 use Illuminate\Support\Facades\DB;
@@ -27,39 +28,49 @@ class GrowerController extends Controller
     {
         $validatedData = $request->validated();
         DB::beginTransaction();
-
+    
         try {
+            $farmer = null;
+    
+            // Create farmer only if provided
+            if (isset($validatedData['farmer'])) {
+                $farmer = Farmer::create($validatedData['farmer']);
+            }
+    
+            // Create grower (farmer_id is optional)
             $grower = Grower::create([
-                'farmer_id' => $validatedData['farmer_id']
+                'farmer_id' => $farmer ? $farmer->farmer_id : null
             ]);
-
+    
             $growerId = $grower->grower_id;
             $createdCrops = [];
             $createdRice = [];
-
-            if (isset($validatedData['crops'])) {
+    
+            // Create crops if provided
+            if (!empty($validatedData['crops'])) {
                 foreach ($validatedData['crops'] as $cropData) {
                     $cropData['grower_id'] = $growerId;
                     $createdCrops[] = Crops::create($cropData);
                 }
             }
-
-            if (isset($validatedData['rice'])) {
+    
+            // Create rice records if provided
+            if (!empty($validatedData['rice'])) {
                 foreach ($validatedData['rice'] as $riceData) {
                     $riceData['grower_id'] = $growerId;
                     $createdRice[] = Rice::create($riceData);
                 }
             }
-
+    
             DB::commit();
-
+    
             return response()->json([
                 'message' => 'Grower and related records created successfully!',
                 'grower' => $grower,
                 'crops' => $createdCrops,
                 'rice' => $createdRice
             ], 201);
-
+    
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -68,7 +79,7 @@ class GrowerController extends Controller
             ], 500);
         }
     }
-
+    
     /**
      * Display the specified grower along with crops and rice.
      */
