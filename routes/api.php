@@ -10,6 +10,7 @@ use App\Http\Controllers\FarmerDataController;
 use App\Http\Controllers\LivestockRecordsController;
 use App\Http\Controllers\RaiserController;
 use App\Http\Controllers\GrowerController;
+use App\Http\Controllers\OperatorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [RaiserController::class, 'show']);         // Get a specific raiser
         Route::put('/{id}', [RaiserController::class, 'update']);       // Update a raiser
         Route::delete('/{id}', [RaiserController::class, 'destroy']);   // Delete a raiser
+    });
+
+    Route::prefix('operators')->group(function () {
+        Route::get('/', [OperatorController::class, 'index']);           // Get all operators
+        Route::post('/', [OperatorController::class, 'store']);          // Create a new operator
+        Route::get('/{id}', [OperatorController::class, 'show']);        // Get a specific operator
+        Route::put('/{id}', [OperatorController::class, 'update']);      // Update an operator
+        Route::delete('/{id}', [OperatorController::class, 'destroy']);  // Delete an operator
     });
 
     // User Profile & Management Routes
