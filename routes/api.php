@@ -36,6 +36,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [GrowerController::class, 'show']);    // Get a specific grower with crops & rice
         Route::put('/{id}', [GrowerController::class, 'update']);  // Update grower, crops, or rice
         Route::delete('/{id}', [GrowerController::class, 'destroy']); // Delete grower and related records
+
+        Route::delete('/{id}/rice', [GrowerController::class, 'destroyRice']); // Delete only rice
+        Route::delete('/{id}/crops', [GrowerController::class, 'destroyCrops']); // Delete only crops 
     });
 
     Route::prefix('raisers')->group(function () {

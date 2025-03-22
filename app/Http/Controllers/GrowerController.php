@@ -202,4 +202,51 @@ class GrowerController extends Controller
             ], 500);
         }
     }
+
+    public function destroyCrops($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $deletedCrops = Crops::where('grower_id', $id)->delete();
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Crops deleted successfully',
+                'deleted_crops' => $deletedCrops
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Crops deletion failed.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete only rice for a specific grower.
+     */
+    public function destroyRice($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $deletedRice = Rice::where('grower_id', $id)->delete();
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Rice deleted successfully',
+                'deleted_rice' => $deletedRice
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Rice deletion failed.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
