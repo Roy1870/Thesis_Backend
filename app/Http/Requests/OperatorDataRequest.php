@@ -22,7 +22,7 @@ class OperatorDataRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'farmer_id'            => 'required|exists:farmers,farmer_id',
+            'farmer_id'  => 'required|integer|exists:farmers,farmer_id', 
             'fishpond_location'    => 'required|string|max:255',
             'geotagged_photo_url'  => 'nullable|string|max:255',
             'cultured_species'     => 'required|string|max:255',

@@ -27,19 +27,19 @@ class StoreRaiserRequest extends FormRequest
             'farmer.buyer_name' => 'nullable|string|max:255',
             'farmer.association_organization' => 'nullable|string|max:255',
 
-            // Raiser Validation
-            'raisers' => 'nullable|array',
-            'raisers.*.farmer_id' => 'nullable|exists:farmers,farmer_id',
-            'raisers.location' => 'required|string|max:255',
-            'raisers.updated_by' => 'required|string|max:255',
-            'raisers.remarks' => 'nullable|string|max:255',
+            // Raiser Validation (Corrected from `raisers` to `raiser`)
+            'raiser' => 'required|array',
+            'raiser.farmer_id' => 'nullable|exists:farmers,farmer_id',
+            'raiser.location' => 'required|string|max:255',
+            'raiser.updated_by' => 'required|string|max:255',
+            'raiser.remarks' => 'nullable|string|max:255',
 
             // Livestock Records Validation
-            'livestock' => 'nullable|array',
-            'livestock.*.raiser_id' => 'nullable|exists:raisers,raiser_id',
-            'livestock.*.animal_type' => 'required_with:livestock|string|max:255',
-            'livestock.*.subcategory' => 'nullable|string|max:255',
-            'livestock.*.quantity' => 'required_with:livestock|integer|min:1',
+            'livestock_records' => 'nullable|array',
+            'livestock_records.*.raiser_id' => 'nullable|exists:raisers,raiser_id',
+            'livestock_records.*.animal_type' => 'required|string|max:255',
+            'livestock_records.*.subcategory' => 'nullable|string|max:255',
+            'livestock_records.*.quantity' => 'required|integer|min:1',
         ];
     }
 }

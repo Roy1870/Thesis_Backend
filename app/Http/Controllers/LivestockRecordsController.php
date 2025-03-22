@@ -6,7 +6,7 @@ use App\Models\LivestockRecord;
 use Illuminate\Http\Request;
 use App\Http\Requests\LivestockRecordsDataRequest; // Import the request class
 
-class LivestockRecordController extends Controller
+class LivestockRecordsController extends Controller
 {
     /**
      * Display a listing of livestock records.

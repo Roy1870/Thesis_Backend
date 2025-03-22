@@ -24,50 +24,58 @@ class RaiserController extends Controller
      * Store a newly created raiser along with livestock and farmer details.
      */
     public function store(StoreRaiserRequest $request)
-{
-    $validatedData = $request->validated();
-    DB::beginTransaction();
-
-    try {
-        $farmer = null;
-
-        // Create farmer only if provided
-        if (isset($validatedData['farmer'])) {
-            $farmer = Farmer::create($validatedData['farmer']);
-        }
-
-        // Create raiser (farmer_id is optional)
-        $raiser = Raiser::create([
-            'farmer_id' => $farmer ? $farmer->farmer_id : null
-        ]);
-
-        $raiserId = $raiser->raiser_id;
-        $createdLivestock = [];
-
-        // Create livestock records if provided
-        if (!empty($validatedData['livestock'])) {
-            foreach ($validatedData['livestock'] as $livestockData) {
-                $livestockData['raiser_id'] = $raiserId;
-                $createdLivestock[] = LivestockRecord::create($livestockData);
+    {
+        $validatedData = $request->validated();
+        DB::beginTransaction();
+    
+        try {
+            $farmer = null;
+    
+            // Create farmer only if provided
+            if (isset($validatedData['farmer'])) {
+                $farmer = Farmer::create($validatedData['farmer']);
             }
+    
+            // Ensure "raiser" key exists in the request
+            $raiserData = $validatedData['raiser'] ?? [];
+            
+            // Create raiser (farmer_id is optional)
+            $raiser = Raiser::create([
+                'farmer_id' => $farmer ? $farmer->farmer_id : null,
+                'location' => $raiserData['location'] ?? null, // Ensure field existence
+                'updated_by' => $raiserData['updated_by'] ?? null,
+                'remarks' => $raiserData['remarks'] ?? null
+            ]);
+    
+            $raiserId = $raiser->raiser_id;
+            $createdLivestock = [];
+    
+            // Create livestock records if provided
+            if (!empty($validatedData['livestock_records'])) {
+                foreach ($validatedData['livestock_records'] as $livestockData) {
+                    $livestockData['raiser_id'] = $raiserId;
+                    $createdLivestock[] = LivestockRecord::create($livestockData);
+                }
+            }
+    
+            DB::commit();
+    
+            return response()->json([
+                'message' => 'Raiser and related records created successfully!',
+                'raiser' => $raiser,
+                'livestock' => $createdLivestock
+            ], 201);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Farmer::where('raiser_id', $farmer->farmer_id)->delete();
+            $farmer->delete();
+            return response()->json([
+                'error' => 'Something went wrong.',
+                'details' => $e->getMessage()
+            ], 500);
         }
-
-        DB::commit();
-
-        return response()->json([
-            'message' => 'Raiser and related records created successfully!',
-            'raiser' => $raiser,
-            'livestock' => $createdLivestock
-        ], 201);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'error' => 'Something went wrong.',
-            'details' => $e->getMessage()
-        ], 500);
     }
-}
 
 
     /**
