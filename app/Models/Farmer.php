@@ -34,4 +34,15 @@ class Farmer extends Model
         'created_at'              => 'datetime',
         'updated_at'              => 'datetime',
     ];
+
+    public function crops()
+    {
+        return $this->hasMany(Crops::class, 'farmer_id');
+    }
+
+    // Define the rice relationship
+    public function rice()
+    {
+        return $this->hasMany(Rice::class, 'farmer_id');
+    }
 }

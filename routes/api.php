@@ -30,32 +30,18 @@ Route::post('/login', [UserAuthController::class, 'login']);
 // Protected routes (authentication required)
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::prefix('{type}/data')->group(function () {
+    Route::prefix('farmers')->group(function () {
         Route::get('/', [FarmerDataController::class, 'index']);
         Route::post('/', [FarmerDataController::class, 'store']);
         Route::get('/{id}', [FarmerDataController::class, 'show']);
         Route::put('/{id}', [FarmerDataController::class, 'update']);
         Route::delete('/{id}', [FarmerDataController::class, 'destroy']);
     });
-
-    Route::prefix('growers')->group(function () {
-        Route::get('/', [GrowerController::class, 'index']);       // List all growers with crops & rice
-        Route::post('/', [GrowerController::class, 'store']);      // Create a new grower with crops & rice
-        Route::get('/{id}', [GrowerController::class, 'show']);    // Get a specific grower with crops & rice
-        Route::put('/{id}', [GrowerController::class, 'update']);  // Update grower, crops, or rice
-        Route::delete('/{id}', [GrowerController::class, 'destroy']); // Delete grower and related records
-
-        Route::delete('/{id}/rice', [GrowerController::class, 'destroyRice']); // Delete only rice
-        Route::delete('/{id}/crops', [GrowerController::class, 'destroyCrops']); // Delete only crops 
-    });
-
-    Route::prefix('raisers')->group(function () {
-        Route::get('/', [RaiserController::class, 'index']);            // Get all raisers
-        Route::post('/', [RaiserController::class, 'store']);           // Create a new raiser
-        Route::get('/{id}', [RaiserController::class, 'show']);         // Get a specific raiser
-        Route::put('/{id}', [RaiserController::class, 'update']);       // Update a raiser
-        Route::delete('/{id}', [RaiserController::class, 'destroy']);   // Delete a raiser
-    });
+    
+    // Routes for deleting individual Crops & Rice
+    Route::delete('/crops/{id}', [FarmerDataController::class, 'deleteCrop']);
+    Route::delete('/rice/{id}', [FarmerDataController::class, 'deleteRice']);
+   
 
     Route::prefix('operators')->group(function () {
         Route::get('/', [OperatorController::class, 'index']);           // Get all operators

@@ -12,19 +12,19 @@ class Rice extends Model
     protected $primaryKey = 'rice_id';
 
     protected $fillable = [
-        'grower_id', 'area_type', 'seed_type',
+        'farmer_id', 'area_type', 'seed_type',
         'area_harvested', 'production', 'ave_yield'
     ];
 
     protected $casts = [
-        'grower_id' => 'integer',
+        'farmer_id' => 'integer',
         'area_harvested' => 'integer',
         'production' => 'integer',
         'ave_yield' => 'integer',
     ];
 
-    public function grower()
+    public function farmer()
     {
-        return $this->belongsTo(Grower::class, 'grower_id');
+        return $this->belongsTo(Farmer::class, 'farmer_id');
     }
 }

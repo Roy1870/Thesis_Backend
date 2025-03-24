@@ -23,15 +23,15 @@ class OperatorDataRequest extends FormRequest
     {
         return [
             'farmer_id'  => 'required|integer|exists:farmers,farmer_id', 
-            'fishpond_location'    => 'required|string|max:255',
+            'fishpond_location'    => 'nullable|string|max:255',
             'geotagged_photo_url'  => 'nullable|string|max:255',
-            'cultured_species'     => 'required|string|max:255',
+            'cultured_species'     => 'nullable|string|max:255',
             'productive_area_sqm'  => 'nullable|numeric|min:0',
             'stocking_density'     => 'nullable|numeric|min:0',
             'date_of_stocking'     => 'nullable|date',
             'production_kg'        => 'nullable|numeric|min:0',
             'date_of_harvest'      => 'nullable|date',
-            'operational_status'   => 'required|string|max:255',
+            'operational_status'   => 'nullable|string|max:255',
             'remarks'              => 'nullable|string|max:500',
         ];
     }

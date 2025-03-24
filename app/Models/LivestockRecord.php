@@ -15,7 +15,7 @@ class LivestockRecord extends Model
     public $timestamps = true; // Ensure timestamps are enabled
 
     protected $fillable = [
-        'raiser_id',
+        'farmer_id',
         'animal_type',
         'subcategory',
         'quantity',
@@ -23,7 +23,7 @@ class LivestockRecord extends Model
 
     protected $casts = [
         'record_id'  => 'integer',
-        'raiser_id'  => 'integer',
+        'farmer_id'  => 'integer',
         'quantity'   => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -32,8 +32,8 @@ class LivestockRecord extends Model
     /**
      * Relationship: LivestockRecord belongs to a Raiser.
      */
-    public function raiser()
+    public function farmer()
     {
-        return $this->belongsTo(Raiser::class, 'raiser_id', 'raiser_id');
+        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id');
     }
 }
