@@ -32,6 +32,7 @@ class FarmerDataRequest extends FormRequest
             'market_outlet_location'    => 'nullable|string|max:255',
             'buyer_name'                => 'nullable|string|max:255',
             'association_organization'  => 'nullable|string|max:255',
+            'barangay'  => 'nullable|string|max:255',
         ];
 
         if ($this->isMethod('post')) { // For storing a new farmer

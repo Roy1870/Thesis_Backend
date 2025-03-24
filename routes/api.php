@@ -30,6 +30,14 @@ Route::post('/login', [UserAuthController::class, 'login']);
 // Protected routes (authentication required)
 Route::middleware('auth:sanctum')->group(function () {
 
+    Route::prefix('{type}/data')->group(function () {
+        Route::get('/', [FarmerDataController::class, 'index']);
+        Route::post('/', [FarmerDataController::class, 'store']);
+        Route::get('/{id}', [FarmerDataController::class, 'show']);
+        Route::put('/{id}', [FarmerDataController::class, 'update']);
+        Route::delete('/{id}', [FarmerDataController::class, 'destroy']);
+    });
+
     Route::prefix('growers')->group(function () {
         Route::get('/', [GrowerController::class, 'index']);       // List all growers with crops & rice
         Route::post('/', [GrowerController::class, 'store']);      // Create a new grower with crops & rice

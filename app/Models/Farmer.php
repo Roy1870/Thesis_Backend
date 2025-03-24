@@ -24,6 +24,7 @@ class Farmer extends Model
         'market_outlet_location',
         'buyer_name',
         'association_organization',
+        'barangay'
     ];
 
     protected $casts = [
