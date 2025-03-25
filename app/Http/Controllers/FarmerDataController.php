@@ -11,9 +11,28 @@ use App\Http\Requests\FarmerDataRequest;
 
 class FarmerDataController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Farmer::with(['crops', 'rice'])->get(), 200);
+        // Get pagination parameters from request
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search', '');
+        
+        // Create query builder
+        $query = Farmer::with(['crops', 'rice']);
+        
+        // Add search functionality if search parameter is provided
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('contact_number', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Get paginated results
+        $farmers = $query->paginate($perPage);
+        
+        return response()->json($farmers, 200);
     }
 
     public function store(Request $request)
