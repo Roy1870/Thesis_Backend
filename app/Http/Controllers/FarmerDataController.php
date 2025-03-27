@@ -8,6 +8,8 @@ use App\Models\Farmer;
 use App\Models\Crops;
 use App\Models\Rice;
 use App\Http\Requests\FarmerDataRequest;
+use App\Http\Requests\CropsDataRequest;
+use App\Http\Requests\RiceDataRequest;
 
 class FarmerDataController extends Controller
 {
@@ -88,6 +90,50 @@ class FarmerDataController extends Controller
             ], 500);
         }
     }
+
+    public function storeCrops(CropsDataRequest $request, $farmerId)
+    {
+        try {
+            $farmer = Farmer::findOrFail($farmerId);
+    
+            foreach ($request->crops as $cropData) {
+                $farmer->crops()->create($cropData);
+            }
+    
+            return response()->json([
+                'message' => 'Crops stored successfully!',
+                'data' => $farmer->load('crops'),
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
+    public function storeRice(RiceDataRequest $request, $farmerId)
+    {
+        try {
+            $farmer = Farmer::findOrFail($farmerId);
+    
+            foreach ($request->rice as $riceData) {
+                $farmer->rice()->create($riceData);
+            }
+    
+            return response()->json([
+                'message' => 'Rice stored successfully!',
+                'data' => $farmer->load('rice'),
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
+
 
     public function show($id)
     {

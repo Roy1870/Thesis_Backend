@@ -1,7 +1,5 @@
 <?php
 
-// app/Models/Farmer.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,6 +33,7 @@ class Farmer extends Model
         'updated_at'              => 'datetime',
     ];
 
+    // Define the crops relationship
     public function crops()
     {
         return $this->hasMany(Crops::class, 'farmer_id');
@@ -44,5 +43,11 @@ class Farmer extends Model
     public function rice()
     {
         return $this->hasMany(Rice::class, 'farmer_id');
+    }
+
+    // Define the livestock records relationship
+    public function livestockRecords()
+    {
+        return $this->hasMany(LivestockRecord::class, 'farmer_id');
     }
 }

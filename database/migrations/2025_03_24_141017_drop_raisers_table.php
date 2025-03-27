@@ -7,8 +7,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
+        // Step 1: Drop the foreign key constraint in livestock_records
+        Schema::table('livestock_records', function (Blueprint $table) {
+            $table->dropForeign(['raiser_id']); // ✅ Drop the foreign key
+            $table->dropColumn('raiser_id'); // ✅ Remove the column if needed
+        });
 
-        // Step 2: Drop the raisers table
+        // Step 2: Now, drop the raisers table safely
         Schema::dropIfExists('raisers');
     }
 
