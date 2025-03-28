@@ -19,6 +19,7 @@ class LivestockRecord extends Model
         'animal_type',
         'subcategory',
         'quantity',
+        'updated_by'
     ];
 
     protected $casts = [

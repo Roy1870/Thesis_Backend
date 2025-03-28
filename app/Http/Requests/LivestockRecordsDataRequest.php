@@ -43,7 +43,7 @@ class LivestockRecordsDataRequest extends FormRequest
             'livestock_records.*.quantity.required' => 'Quantity is required.',
             'livestock_records.*.quantity.integer' => 'Quantity must be a whole number.',
             'livestock_records.*.quantity.min' => 'Quantity must be at least 1.',
-            'livestock_records.*.updated_by.required' => 'Updated by field is required.',
+            'livestock_records.*.updated_by.required' => 'Updated by field is required.',       
         ];
     }
 }
