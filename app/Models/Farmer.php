@@ -50,4 +50,10 @@ class Farmer extends Model
     {
         return $this->hasMany(LivestockRecord::class, 'farmer_id');
     }
+
+    public function operators()
+{
+    return $this->hasMany(Operator::class, 'farmer_id');
+}
+
 }

@@ -9,7 +9,10 @@ class Operator extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'operator_id'; 
+    protected $table = 'operators'; // Explicit table name
+    protected $primaryKey = 'operator_id'; // Matches migration
+
+    public $timestamps = true; // Ensure timestamps are enabled
 
     protected $fillable = [
         'farmer_id',
@@ -39,7 +42,8 @@ class Operator extends Model
     ];
 
     public function farmer()
-    {
-        return $this->belongsTo(Farmer::class, 'farmer_id', 'farmer_id');
-    }
+{
+    return $this->belongsTo(Farmer::class, 'farmer_id');
+}
+
 }
