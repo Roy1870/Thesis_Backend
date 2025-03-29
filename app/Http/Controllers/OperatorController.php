@@ -94,20 +94,60 @@ class OperatorController extends Controller
      */
     public function update(StoreOperatorRequest $request, $id)
     {
-        $operator = Operator::find($id);
-
-        if (!$operator) {
-            return response()->json(['message' => 'Operator not found'], 404);
+        try {
+            // Find the farmer
+            $farmer = Farmer::findOrFail($id);
+    
+            // Validate input
+            $validatedRequest = app(StoreOperatorRequest::class);
+            $validated = $validatedRequest->validated();
+    
+            // Update the farmer's details if provided
+            $updatedFarmerData = array_merge($farmer->toArray(), array_filter($validated, fn($value) => !is_null($value)));
+            $farmer->update($updatedFarmerData);
+    
+            // Update or create operators if provided
+            if (!empty($validated['operators'])) {
+                foreach ($validated['operators'] as $operatorData) {
+                    // Find an existing operator for this farmer, or create a new one
+                    $existingOperator = $farmer->operators()->where('fishpond_location', $operatorData['fishpond_location'])->first();
+    
+                    // Ensure all operator fields retain existing values if not provided
+                    $operatorData = array_merge($existingOperator ? $existingOperator->toArray() : [], array_filter($operatorData, fn($value) => !is_null($value)));
+    
+                    // Update or create operator record
+                    $farmer->operators()->updateOrCreate(
+                        ['fishpond_location' => $operatorData['fishpond_location']], 
+                        $operatorData
+                    );
+                }
+            }
+    
+            return response()->json([
+                'message' => 'Farmer and operator records updated successfully!',
+                'data' => $farmer->load('operators'),
+            ], 200);
+    
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation failed',
+                'messages' => $e->errors(),
+            ], 422);
+    
+        } catch (\Exception $e) {
+            Log::error('Error updating farmer and operator data: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+    
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        $operator->update($request->validated());
-
-        return response()->json([
-            'message' => 'Operator updated successfully!',
-            'data' => $operator->load('farmer'),
-        ], 200);
     }
-
+    
+    
     /**
      * Delete a specific operator.
      */

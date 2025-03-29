@@ -27,7 +27,6 @@ class CropsDataRequest extends FormRequest
     {
         return [
             'crops.required' => 'Crops data is required.',
-         
             'crops.*.farmer_id.exists' => 'The provided Farmer ID does not exist.',
             'crops.*.crop_type.required' => 'Crop type is required for each crop.',
         ];

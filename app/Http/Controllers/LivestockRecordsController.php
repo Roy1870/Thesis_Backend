@@ -93,20 +93,48 @@ class LivestockRecordsController extends Controller
      */
     public function update(LivestockRecordsDataRequest $request, $id)
     {
-        $livestockRecord = LivestockRecord::find($id);
-
-        if (!$livestockRecord) {
-            return response()->json(['message' => 'Record not found'], 404);
+        try {
+            // Find the livestock record
+            $livestockRecord = LivestockRecord::findOrFail($id);
+    
+            // Get validated data
+            $validated = $request->validated();
+    
+            // Extract livestock data
+            if (!empty($validated['livestock_records']) && is_array($validated['livestock_records'])) {
+                $livestockData = $validated['livestock_records'][0]; // Get the first record
+                
+                // Update the livestock record with new data
+                $livestockRecord->update($livestockData);
+                
+                return response()->json([
+                    'message' => 'Livestock record updated successfully!',
+                    'data' => $livestockRecord,
+                ], 200);
+            }
+    
+            return response()->json([
+                'error' => 'No livestock data provided',
+            ], 422);
+    
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation failed',
+                'messages' => $e->errors(),
+            ], 422);
+    
+        } catch (\Exception $e) {
+            Log::error('Error updating livestock record: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+    
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        $livestockRecord->update($request->validated());
-
-        return response()->json([
-            'message' => 'Livestock record updated successfully!',
-            'data' => $livestockRecord
-        ], 200);
     }
-
     /**
      * Delete a specific livestock record.
      */

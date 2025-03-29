@@ -28,21 +28,21 @@ Route::post('/login', [UserAuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 
     // Farmers Module
-    Route::prefix('farmers')->group(function () {
-        Route::get('/', [FarmerDataController::class, 'index']);
-        Route::post('/', [FarmerDataController::class, 'store']);
-        Route::get('/{id}', [FarmerDataController::class, 'show']);
-        Route::put('/{id}', [FarmerDataController::class, 'update']);
-        Route::delete('/{id}', [FarmerDataController::class, 'destroy']);
+    Route::get('/farmers', [FarmerDataController::class, 'index']);
+    Route::post('/farmers', [FarmerDataController::class, 'store']);
+    Route::put('/farmers/{id}', [FarmerDataController::class, 'updateFarmer']);
+    Route::get('/farmers/{id}', [FarmerDataController::class, 'show']);
+    Route::delete('/farmers/{id}', [FarmerDataController::class, 'destroyFarmer']);
+    
+    Route::post('/farmers/{farmerId}/crops', [FarmerDataController::class, 'storeCrops']);
+    Route::post('/farmers/{farmerId}/rice', [FarmerDataController::class, 'storeRice']);
 
-        // Crops & Rice Routes under Farmers
-        Route::post('/{id}/crops', [FarmerDataController::class, 'storeCrops']);
-        Route::post('/{id}/rice', [FarmerDataController::class, 'storeRice']);
-    });
-
-    // Routes for deleting individual Crops & Rice
-    Route::delete('/crops/{id}', [FarmerDataController::class, 'destroyCrop']);
-    Route::delete('/rice/{id}', [FarmerDataController::class, 'destroyRice']);
+    Route::put('/farmers/{farmerId}/crops/{cropId}', [FarmerDataController::class, 'updateCrops']);
+    Route::put('/farmers/{farmerId}/rice/{riceId}', [FarmerDataController::class, 'updateRice']);
+    
+    Route::delete('/farmers/{farmerId}/crops/{cropId}', [FarmerDataController::class, 'destroyCrop']);
+    Route::delete('/farmers/{farmerId}/rice/{riceId}', [FarmerDataController::class, 'destroyRice']);
+    
 
     // Livestock Records Module
     Route::prefix('livestock-records')->group(function () {
