@@ -27,9 +27,7 @@ class UserManagementController extends Controller
                 'id' => $user->id, // Add ID to handle deletion and updates
                 'name' => $user->name,
                 'email' => $user->email,
-                'phone_number' => $user->profile ? $user->profile->phone_number : null,
-                'address' => $user->profile ? $user->profile->address : null,
-                'user_type' => $user->profile ? $user->profile->user_type : null, // Include user type
+                'role' => $user->role // Changed from user_type to role
             ];
         });
 
@@ -62,33 +60,31 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Update the user type (e.g., change to admin/user).
+     * Update the user role (e.g., change to admin/user).
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function changeUserType(Request $request, $userId)
-{
-    // Find the user profile associated with the user
-    $userProfile = UserProfile::where('user_id', $userId)->first();
+    public function changeUserRole(Request $request, $userId)
+    {
+        // Find the user profile associated with the user
+        $userProfile = UserProfile::where('user_id', $userId)->first();
 
-    // If the user profile doesn't exist, return an error
-    if (!$userProfile) {
-        return response()->json(['message' => 'User not found'], 404);
+        // If the user profile doesn't exist, return an error
+        if (!$userProfile) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Validate the new user role
+        $validatedData = $request->validate([
+            'role' => 'required|string|in:admin,user', // Changed from user_type to role
+        ]);
+
+        // Update the user role in the user profile
+        $userProfile->role = $validatedData['role'];
+        $userProfile->save();
+
+        return response()->json(['message' => 'User role updated successfully']);
     }
-
-    // Validate the new user type
-    $validatedData = $request->validate([
-        'user_type' => 'required|string|in:admin,user', // Assuming 'admin' and 'user' are the only valid types
-    ]);
-
-    // Update the user type in the user profile
-    $userProfile->user_type = $validatedData['user_type'];
-    $userProfile->save();
-
-    return response()->json(['message' => 'User type updated successfully']);
-}
-
-    
 }

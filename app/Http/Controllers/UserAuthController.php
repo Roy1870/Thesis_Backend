@@ -30,13 +30,13 @@ class UserAuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Fetch the user type from the user profile
-        $userType = $user->profile ? $user->profile->user_type : 'user'; // Default to 'user' if no profile
+        $role = $user->profile ? $user->profile->role : 'user'; // Default to 'user' if no profile
         $userName = $user->name;
 
         return response()->json([
             'message' => 'Login successful',
             'user' => $user,
-            'user_type' => $userType, // Add user type to response
+            'role' => $role, // Add user type to response
             'token' => $token,
             'name' => $userName,
         ], 200);
