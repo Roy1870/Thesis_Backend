@@ -1,5 +1,7 @@
 <?php
 
+// Vercel will run this file as a serverless function.
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = require_once __DIR__ . '/../bootstrap/app.php';
