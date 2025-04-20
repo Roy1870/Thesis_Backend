@@ -71,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('usermanagement')->group(function () {
         Route::get('/data', [UserManagementController::class, 'getAllUserInfo']);
         Route::delete('/delete/{id}', [UserManagementController::class, 'deleteUser']);
-        Route::put('/change-type/{id}', [UserManagementController::class, 'changeUserType']);
+        Route::put('/change-type/{id}', [UserManagementController::class, 'changeUserRole']);
     });
 
     // Authentication routes
