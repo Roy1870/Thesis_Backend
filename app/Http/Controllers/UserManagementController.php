@@ -69,10 +69,10 @@ class UserManagementController extends Controller
     public function changeUserRole(Request $request, $userId)
     {
         // Find the user profile associated with the user
-        $userProfile = UserProfile::where('user_id', $userId)->first();
+        $user = User::where('user_id', $userId)->first();
 
         // If the user profile doesn't exist, return an error
-        if (!$userProfile) {
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
@@ -82,8 +82,8 @@ class UserManagementController extends Controller
         ]);
 
         // Update the user role in the user profile
-        $userProfile->role = $validatedData['role'];
-        $userProfile->save();
+        $user->role = $validatedData['role'];
+        $user->save();
 
         return response()->json(['message' => 'User role updated successfully']);
     }
