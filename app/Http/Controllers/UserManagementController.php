@@ -69,7 +69,7 @@ class UserManagementController extends Controller
     public function changeUserRole(Request $request, $userId)
     {
         // Find the user profile associated with the user
-        $user = User::where('user_id', $userId)->first();
+        $user = User::where('id', $userId)->first();
 
         // If the user profile doesn't exist, return an error
         if (!$user) {
