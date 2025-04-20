@@ -78,7 +78,7 @@ class UserManagementController extends Controller
 
         // Validate the new user role
         $validatedData = $request->validate([
-            'role' => 'required|string|in:admin,user', // Changed from user_type to role
+            'role' => 'required|string|in:admin,collector,planner', // Changed from user_type to role
         ]);
 
         // Update the user role in the user profile
