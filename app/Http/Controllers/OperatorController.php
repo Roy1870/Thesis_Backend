@@ -55,32 +55,6 @@ class OperatorController extends Controller
                         $path = $photo->store('photos', 'public');
                         $operatorData['geotagged_photo_url'] = Storage::url($path);
                         
-                        // Extract location from photo if available
-                        $fullPath = storage_path('app/public/' . $path);
-                        if (function_exists('exif_read_data') && file_exists($fullPath)) {
-                            $exif = @exif_read_data($fullPath);
-                            
-                            if ($exif && isset($exif['GPSLatitude']) && isset($exif['GPSLongitude'])) {
-                                // Convert GPS coordinates to decimal format
-                                $lat = $this->convertGPSToDecimal(
-                                    $exif['GPSLatitude'], 
-                                    $exif['GPSLatitudeRef'] ?? 'N'
-                                );
-                                
-                                $lng = $this->convertGPSToDecimal(
-                                    $exif['GPSLongitude'], 
-                                    $exif['GPSLongitudeRef'] ?? 'E'
-                                );
-                                
-                                // Store as a string in fishpond_location
-                                $operatorData['fishpond_location'] = "$lat, $lng";
-                                
-                                Log::info('Extracted GPS coordinates', [
-                                    'location' => $operatorData['fishpond_location']
-                                ]);
-                            }
-                        }
-                        
                         // Remove the file object from data before saving
                         unset($operatorData['geotagged_photo']);
                     }
@@ -112,43 +86,6 @@ class OperatorController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
-    }
-    
-    /**
-     * Convert GPS coordinates from EXIF format to decimal
-     */
-    private function convertGPSToDecimal($coordParts, $hemisphere) 
-    {
-        if (is_array($coordParts)) {
-            $degrees = $this->convertExifPart($coordParts[0]);
-            $minutes = $this->convertExifPart($coordParts[1]);
-            $seconds = $this->convertExifPart($coordParts[2]);
-            
-            $decimal = $degrees + ($minutes / 60) + ($seconds / 3600);
-            
-            // If hemisphere is South or West, make the coordinate negative
-            if ($hemisphere == 'S' || $hemisphere == 'W') {
-                $decimal *= -1;
-            }
-            
-            return round($decimal, 6); // Round to 6 decimal places for precision
-        }
-        
-        return 0;
-    }
-    
-    /**
-     * Convert EXIF fraction to decimal
-     */
-    private function convertExifPart($part) 
-    {
-        if (is_string($part) && strpos($part, '/') !== false) {
-            $pieces = explode('/', $part);
-            if (count($pieces) == 2 && $pieces[1] != 0) {
-                return $pieces[0] / $pieces[1];
-            }
-        }
-        return floatval($part);
     }
     
     /**
@@ -192,28 +129,6 @@ class OperatorController extends Controller
                         // Store the photo
                         $path = $photo->store('photos', 'public');
                         $operatorData['geotagged_photo_url'] = Storage::url($path);
-                        
-                        // Extract location from photo if available
-                        $fullPath = storage_path('app/public/' . $path);
-                        if (function_exists('exif_read_data') && file_exists($fullPath)) {
-                            $exif = @exif_read_data($fullPath);
-                            
-                            if ($exif && isset($exif['GPSLatitude']) && isset($exif['GPSLongitude'])) {
-                                // Convert GPS coordinates to decimal format
-                                $lat = $this->convertGPSToDecimal(
-                                    $exif['GPSLatitude'], 
-                                    $exif['GPSLatitudeRef'] ?? 'N'
-                                );
-                                
-                                $lng = $this->convertGPSToDecimal(
-                                    $exif['GPSLongitude'], 
-                                    $exif['GPSLongitudeRef'] ?? 'E'
-                                );
-                                
-                                // Store as a string in fishpond_location
-                                $operatorData['fishpond_location'] = "$lat, $lng";
-                            }
-                        }
                         
                         // Remove the file object from data before saving
                         unset($operatorData['geotagged_photo']);
