@@ -7,6 +7,7 @@ use App\Models\Operator;
 use App\Models\Farmer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreOperatorRequest;
 
 class OperatorController extends Controller
@@ -45,6 +46,45 @@ class OperatorController extends Controller
             if (!empty($validated['operators'])) {
                 foreach ($validated['operators'] as $operatorData) {
                     Log::info('Storing Operator Record:', $operatorData);
+                    
+                    // Handle geotagged photo if present
+                    if (isset($operatorData['geotagged_photo']) && $operatorData['geotagged_photo']) {
+                        $photo = $operatorData['geotagged_photo'];
+                        
+                        // Store the photo
+                        $path = $photo->store('photos', 'public');
+                        $operatorData['geotagged_photo_url'] = Storage::url($path);
+                        
+                        // Extract location from photo if available
+                        $fullPath = storage_path('app/public/' . $path);
+                        if (function_exists('exif_read_data') && file_exists($fullPath)) {
+                            $exif = @exif_read_data($fullPath);
+                            
+                            if ($exif && isset($exif['GPSLatitude']) && isset($exif['GPSLongitude'])) {
+                                // Convert GPS coordinates to decimal format
+                                $lat = $this->convertGPSToDecimal(
+                                    $exif['GPSLatitude'], 
+                                    $exif['GPSLatitudeRef'] ?? 'N'
+                                );
+                                
+                                $lng = $this->convertGPSToDecimal(
+                                    $exif['GPSLongitude'], 
+                                    $exif['GPSLongitudeRef'] ?? 'E'
+                                );
+                                
+                                // Store as a string in fishpond_location
+                                $operatorData['fishpond_location'] = "$lat, $lng";
+                                
+                                Log::info('Extracted GPS coordinates', [
+                                    'location' => $operatorData['fishpond_location']
+                                ]);
+                            }
+                        }
+                        
+                        // Remove the file object from data before saving
+                        unset($operatorData['geotagged_photo']);
+                    }
+                    
                     $farmer->operators()->create($operatorData);
                 }
             }
@@ -74,6 +114,42 @@ class OperatorController extends Controller
         }
     }
     
+    /**
+     * Convert GPS coordinates from EXIF format to decimal
+     */
+    private function convertGPSToDecimal($coordParts, $hemisphere) 
+    {
+        if (is_array($coordParts)) {
+            $degrees = $this->convertExifPart($coordParts[0]);
+            $minutes = $this->convertExifPart($coordParts[1]);
+            $seconds = $this->convertExifPart($coordParts[2]);
+            
+            $decimal = $degrees + ($minutes / 60) + ($seconds / 3600);
+            
+            // If hemisphere is South or West, make the coordinate negative
+            if ($hemisphere == 'S' || $hemisphere == 'W') {
+                $decimal *= -1;
+            }
+            
+            return round($decimal, 6); // Round to 6 decimal places for precision
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Convert EXIF fraction to decimal
+     */
+    private function convertExifPart($part) 
+    {
+        if (is_string($part) && strpos($part, '/') !== false) {
+            $pieces = explode('/', $part);
+            if (count($pieces) == 2 && $pieces[1] != 0) {
+                return $pieces[0] / $pieces[1];
+            }
+        }
+        return floatval($part);
+    }
     
     /**
      * Display a specific operator.
@@ -109,17 +185,55 @@ class OperatorController extends Controller
             // Update or create operators if provided
             if (!empty($validated['operators'])) {
                 foreach ($validated['operators'] as $operatorData) {
-                    // Find an existing operator for this farmer, or create a new one
-                    $existingOperator = $farmer->operators()->where('fishpond_location', $operatorData['fishpond_location'])->first();
+                    // Handle geotagged photo if present
+                    if (isset($operatorData['geotagged_photo']) && $operatorData['geotagged_photo']) {
+                        $photo = $operatorData['geotagged_photo'];
+                        
+                        // Store the photo
+                        $path = $photo->store('photos', 'public');
+                        $operatorData['geotagged_photo_url'] = Storage::url($path);
+                        
+                        // Extract location from photo if available
+                        $fullPath = storage_path('app/public/' . $path);
+                        if (function_exists('exif_read_data') && file_exists($fullPath)) {
+                            $exif = @exif_read_data($fullPath);
+                            
+                            if ($exif && isset($exif['GPSLatitude']) && isset($exif['GPSLongitude'])) {
+                                // Convert GPS coordinates to decimal format
+                                $lat = $this->convertGPSToDecimal(
+                                    $exif['GPSLatitude'], 
+                                    $exif['GPSLatitudeRef'] ?? 'N'
+                                );
+                                
+                                $lng = $this->convertGPSToDecimal(
+                                    $exif['GPSLongitude'], 
+                                    $exif['GPSLongitudeRef'] ?? 'E'
+                                );
+                                
+                                // Store as a string in fishpond_location
+                                $operatorData['fishpond_location'] = "$lat, $lng";
+                            }
+                        }
+                        
+                        // Remove the file object from data before saving
+                        unset($operatorData['geotagged_photo']);
+                    }
+                    
+                    // Find an existing operator for this farmer
+                    $existingOperator = null;
+                    if (isset($operatorData['id'])) {
+                        $existingOperator = $farmer->operators()->find($operatorData['id']);
+                    } elseif (isset($operatorData['fishpond_location'])) {
+                        $existingOperator = $farmer->operators()->where('fishpond_location', $operatorData['fishpond_location'])->first();
+                    }
     
-                    // Ensure all operator fields retain existing values if not provided
-                    $operatorData = array_merge($existingOperator ? $existingOperator->toArray() : [], array_filter($operatorData, fn($value) => !is_null($value)));
-    
-                    // Update or create operator record
-                    $farmer->operators()->updateOrCreate(
-                        ['fishpond_location' => $operatorData['fishpond_location']], 
-                        $operatorData
-                    );
+                    if ($existingOperator) {
+                        // Update existing operator
+                        $existingOperator->update($operatorData);
+                    } else {
+                        // Create new operator
+                        $farmer->operators()->create($operatorData);
+                    }
                 }
             }
     
@@ -146,7 +260,6 @@ class OperatorController extends Controller
             ], 500);
         }
     }
-    
     
     /**
      * Delete a specific operator.
