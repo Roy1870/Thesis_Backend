@@ -15,6 +15,7 @@ class Farmer extends Model
         'name',
         'contact_number',
         'facebook_email',
+        'rsbsa_id',
         'home_address',
         'farm_address',
         'farm_location_longitude',
