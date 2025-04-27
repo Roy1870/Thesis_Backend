@@ -19,6 +19,7 @@ class LivestockRecordsDataRequest extends FormRequest
             'name' => 'required_without:farmer_id|string|max:255', // Required if no farmer_id is provided
             'contact_number' => 'nullable|string|max:20',
             'facebook_email' => 'nullable|string|max:255',
+            'rsbsa_id' => 'nullable|string|max:255',
             'home_address' => 'nullable|string|max:500',
             'farm_address' => 'nullable|string|max:500',
             'barangay' => 'nullable|string|max:255',
