@@ -18,7 +18,6 @@ class StoreOperatorRequest extends FormRequest
             'farmer_id' => 'nullable|exists:farmers,farmer_id', // Nullable for new farmers
             'name' => 'required_without:farmer_id|string|max:255', // Required if no farmer_id is provided
             'contact_number' => 'nullable|string|max:20',
-            'rsbsa_id' => 'nullable|string|max:255',
             'facebook_email' => 'nullable|string|max:255',
             'home_address' => 'nullable|string|max:500',
             'barangay' => 'nullable|string|max:255',
