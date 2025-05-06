@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserProfile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log; // For logging
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserProfileController extends Controller
 {
@@ -26,21 +29,25 @@ class UserProfileController extends Controller
         // Eager load the user's profile
         $user->load('profile'); // Ensure the profile is loaded
 
-        // If the user doesn't have a profile, return an error
+        // If the user doesn't have a profile, create a basic one
         if (!$user->profile) {
-            return response()->json(['error' => 'Profile not found for this user.']);
+            $profile = new UserProfile();
+            $profile->user_id = $user->id;
+            $profile->save();
+            $user->refresh(); // Refresh the user to include the new profile
+        } else {
+            $profile = $user->profile;
         }
-
-        // Retrieve profile details
-        $profile = $user->profile;
 
         // Return user and profile data
         return response()->json([
             'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
                 'email' => $user->email,
-                'phone_number' => $profile->phone_number,
-                'address' => $profile->address,
                 'profile_picture' => $profile->profile_picture ? asset('storage/' . $profile->profile_picture) : null,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
             ],
         ]);
     }
@@ -50,15 +57,48 @@ class UserProfileController extends Controller
      */
     public function storeOrUpdate(Request $request)
     {
-        // Validate the input
-        $request->validate([
-            'phone_number' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:255',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
         // Get the authenticated user
         $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated.'], 401);
+        }
+
+        // Validate the input
+        $validationRules = [
+            'name' => 'nullable|string|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'password' => 'nullable|string|min:8',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ];
+
+        $request->validate($validationRules);
+
+        // Update user fields if provided
+        $userUpdated = false;
+        
+        if ($request->has('name') && $request->name !== null) {
+            $user->name = $request->name;
+            $userUpdated = true;
+        }
+        
+        if ($request->has('email') && $request->email !== null) {
+            $user->email = $request->email;
+            $userUpdated = true;
+        }
+        
+        if ($request->has('password') && $request->password !== null) {
+            $user->password = Hash::make($request->password);
+            $userUpdated = true;
+        }
+        
+        if ($userUpdated) {
+            $user->save();
+        }
 
         // Check if the user already has a profile
         $profile = $user->profile;
@@ -69,32 +109,31 @@ class UserProfileController extends Controller
             $profile->user_id = $user->id;
         }
 
-        // Update profile fields
-        $profile->phone_number = $request->input('phone_number');
-        $profile->address = $request->input('address');
-
         // Handle profile picture upload
         if ($request->hasFile('profile_picture')) {
             // Delete old profile picture if exists
-            if ($profile->profile_picture && Storage::exists($profile->profile_picture)) {
-                Storage::delete($profile->profile_picture);
+            if ($profile->profile_picture && Storage::exists('public/' . $profile->profile_picture)) {
+                Storage::delete('public/' . $profile->profile_picture);
             }
 
             // Store new profile picture and get the path
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
             Log::info("Profile picture stored at: " . $path); // Debugging log
             $profile->profile_picture = $path;
+            $profile->save();
         }
-
-        // Save the profile
-        $profile->save();
 
         // Return response
         return response()->json([
             'message' => 'Profile updated successfully.',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
             'profile' => [
-                'phone_number' => $profile->phone_number,
-                'address' => $profile->address,
                 'profile_picture' => $profile->profile_picture ? asset('storage/' . $profile->profile_picture) : null,
             ],
         ]);

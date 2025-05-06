@@ -25,14 +25,12 @@ class StoreOperatorRequest extends FormRequest
             // Operator Validation
             'operators' => 'required|array|min:1',
             'operators.*.fishpond_location' => 'required|string|max:255',
-            'operators.*.geotagged_photo_url' => 'nullable|string|max:255',
             'operators.*.cultured_species' => 'required|string|max:255',
             'operators.*.productive_area_sqm' => 'nullable|numeric|min:0',
             'operators.*.stocking_density' => 'nullable|numeric|min:0',
             'operators.*.date_of_stocking' => 'nullable|date',
             'operators.*.production_kg' => 'nullable|numeric|min:0',
             'operators.*.date_of_harvest' => 'nullable|date',
-            'operators.*.operational_status' => 'nullable|string|max:255',
             'operators.*.remarks' => 'nullable|string|max:255',
         ];
     }

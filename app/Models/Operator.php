@@ -17,14 +17,12 @@ class Operator extends Model
     protected $fillable = [
         'farmer_id',
         'fishpond_location',
-        'geotagged_photo_url',
         'cultured_species',
         'productive_area_sqm',
         'stocking_density',
         'date_of_stocking',
         'production_kg',
         'date_of_harvest',
-        'operational_status',
         'remarks',
         'created_at',
         'updated_at'
